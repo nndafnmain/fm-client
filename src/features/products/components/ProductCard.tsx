@@ -11,7 +11,8 @@ import { useState } from "react";
 export const ProductCard = ({
 	name,
 	price,
-}: { name: string; price: string }) => {
+	imageUrl,
+}: { name: string; price: string; imageUrl?: string }) => {
 	const [rating, setRating] = useState(0);
 
 	const handleRating = (rate: number) => {

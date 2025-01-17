@@ -11,40 +11,32 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-
-const formSchema = z.object({
-	email: z.string().email({
-		message: "Email must be an email.",
-	}),
-	password: z.string().nonempty().min(6, {
-		message: "Password should be minimal 6 characters!",
-	}),
-});
+import { useLogin } from "../hooks/useLogin";
+import type { LoginSchema } from "../schemas/login.schema";
+import { loginSchema } from "../schemas/login.schema";
+import { FormHeader } from "./FormHeader";
 
 export const Login = () => {
-	const form = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
+	const form = useForm<LoginSchema>({
+		resolver: zodResolver(loginSchema),
 		defaultValues: {
 			email: "",
 			password: "",
 		},
 	});
 
-	function onSubmit(values: z.infer<typeof formSchema>) {
-		console.log(values);
+	const mutation = useLogin();
+
+	function onSubmit(values: LoginSchema) {
+		mutation.mutate(values);
 	}
 
 	return (
 		<main className="container space-y-5 mt-1">
-			<section className="mb-6">
-				<h1 className="text-3xl font-semibold text-blue-600">
-					Login to your account
-				</h1>
-				<p className="text-base font-normal text-orange-400">
-					It’s great to see you again.
-				</p>
-			</section>
+			<FormHeader
+				mainTitle="Login to your account"
+				childTitle="It's great to see you again"
+			/>
 			<section className="space-y-4">
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

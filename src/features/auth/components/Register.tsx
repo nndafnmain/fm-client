@@ -11,31 +11,14 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-
-const formSchema = z
-	.object({
-		username: z.string().min(2, {
-			message: "Username must be at least 2 characters.",
-		}),
-		email: z.string().email({
-			message: "Email must be an email.",
-		}),
-		password: z.string().nonempty().min(6, {
-			message: "Password should be minimal 6 characters!",
-		}),
-		confirmPassword: z.string().min(6, {
-			message: "Password should be minimal 6 characters!",
-		}),
-	})
-	.refine((data) => data.password === data.confirmPassword, {
-		message: "Password doesn't match!",
-		path: ["confirmPassword"],
-	});
+import { useRegister } from "../hooks/useRegister";
+import type { RegisterSchema } from "../schemas/register.schema";
+import { registerSchema } from "../schemas/register.schema";
+import { FormHeader } from "./FormHeader";
 
 export const Register = () => {
-	const form = useForm<z.infer<typeof formSchema>>({
-		resolver: zodResolver(formSchema),
+	const form = useForm<RegisterSchema>({
+		resolver: zodResolver(registerSchema),
 		defaultValues: {
 			username: "",
 			email: "",
@@ -44,20 +27,19 @@ export const Register = () => {
 		},
 	});
 
-	function onSubmit(values: z.infer<typeof formSchema>) {
-		console.log(values);
+	const mutation = useRegister();
+
+	function onSubmit(values: RegisterSchema) {
+		const { username, email, password } = values;
+		mutation.mutate({ username, email, password });
 	}
 
 	return (
 		<main className="container space-y-5 mt-1">
-			<section className="mb-6">
-				<h1 className="text-3xl font-semibold text-blue-600">
-					Create an account
-				</h1>
-				<p className="text-base font-normal text-orange-400">
-					Let’s create your account.
-				</p>
-			</section>
+			<FormHeader
+				mainTitle="Create an account"
+				childTitle="Please register first"
+			/>
 			<section className="space-y-4">
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
