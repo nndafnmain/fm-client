@@ -45,8 +45,8 @@ const categories = [
 
 export const Category = () => {
 	return (
-		<article className="container mt-5 space-y-3">
-			<h1 className="underline decoration-2 decoration-orange-500">
+		<article className="mt-5 space-y-3">
+			<h1 className="container underline decoration-2 decoration-orange-500">
 				Shop by category
 			</h1>
 			<section className="grid grid-cols-4 gap-4">
