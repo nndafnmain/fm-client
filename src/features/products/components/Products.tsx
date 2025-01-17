@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { ProductCard } from "./ProductCard";
 const products = [
@@ -14,11 +13,11 @@ const products = [
 
 export const Products = () => {
 	return (
-		<main className="container">
-			<h1 className="underline decoration-2 decoration-orange-500 my-3">
+		<main className="">
+			<h1 className="p-2 underline decoration-2 decoration-orange-500 my-3">
 				Best seller products
 			</h1>
-			<section className="grid grid-cols-2 gap-5">
+			<section className="grid grid-cols-2 gap-1">
 				{products.map((product, idx) => {
 					return (
 						<Link key={idx} to={product.title}>
