@@ -5,24 +5,28 @@ import {
 	CardDescription,
 	CardFooter,
 } from "@/components/ui/card";
+import { useAddItemToCart } from "@/features/cart/hooks/useAddItemToCart";
 import { Star } from "lucide-react";
 import { useState } from "react";
 
 export const ProductCard = ({
+	id,
 	name,
 	price,
 	imageUrl,
-}: { name: string; price: string; imageUrl?: string }) => {
+}: { id: number; name: string; price: number; imageUrl?: string }) => {
 	const [rating, setRating] = useState(0);
 
 	const handleRating = (rate: number) => {
 		setRating(rate);
 	};
+
+	const addToCart = useAddItemToCart();
 	return (
 		<Card className="w-[95%] p-0 h-[17.6rem] mx-auto border border-gray-300 rounded-lg shadow-md">
 			<CardContent className="p-0 overflow-hidden w-full h-40">
 				<img
-					src="/products/prd1.jpg"
+					src={imageUrl || "/products/prd1.jpg"}
 					alt=""
 					className="w-full object-cover h-full"
 					style={{ width: "100%", height: "100%", objectFit: "cover" }}
@@ -49,7 +53,10 @@ export const ProductCard = ({
 				</div>
 			</CardDescription>
 			<CardFooter className="max-w-full p-0 mt-4">
-				<Button className="w-[97%] mx-auto h-8 rounded-lg bg-blue-600 text-xs">
+				<Button
+					className="w-[97%] mx-auto h-8 rounded-lg bg-blue-600 text-xs"
+					onClick={() => addToCart.mutate({ userId: 2, productId: id })}
+				>
 					Add to cart
 				</Button>
 			</CardFooter>

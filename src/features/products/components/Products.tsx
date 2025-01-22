@@ -1,28 +1,13 @@
-import { data, Link } from "react-router-dom";
-import { ProductCard } from "./ProductCard";
+import { R2_PUBLIC_URL } from "@/lib/constants";
+import { Link } from "react-router-dom";
 import { useProducts } from "../hooks/useProducts";
-// const products = [
-// 	{ title: "Chanise Cabbage Chanise Cabbage Chanise Cabbage", price: "$14.99" },
-// 	{ title: "Fresh Organic Lettuce", price: "$5.49" },
-// 	{ title: "Ripe Avocados", price: "$2.99" },
-// 	{ title: "Gala Apples", price: "$3.99" },
-// 	{ title: "Organic Tomatoes", price: "$6.49" },
-// 	{ title: "Carrots (1 lb)", price: "$1.99" },
-// 	{ title: "Sweet Potatoes", price: "$4.49" },
-// 	{ title: "Cucumbers", price: "$2.29" },
-// ];
-
-interface IProduct {
-	id: number;
-	productName: string;
-	price: string;
-	imageUrl: string;
-}
+import type { IProduct } from "../services/productServices";
+import { ProductCard } from "./ProductCard";
 
 export const Products = () => {
 	const { data, error, isLoading } = useProducts();
 
-	console.log("PRODUCTS", data.data);
+	console.log("PRODUCTS", data);
 
 	if (error) {
 		return <p>Error</p>;
@@ -31,21 +16,29 @@ export const Products = () => {
 	if (isLoading) {
 		return <p>Loading</p>;
 	}
+
+	const products = data?.data || [];
+
+	if (products.length === 0) {
+		return <p>No products available</p>;
+	}
+
 	return (
 		<main className="">
 			<h1 className="p-2 underline decoration-2 decoration-orange-500 my-3">
 				Best seller products
 			</h1>
 			<section className="grid grid-cols-2 gap-1">
-				{/* biome-ignore lint/suspicious/noExplicitAny: <explanation> */}
-				{data?.map((product: IProduct, idx: any) => {
+				{products?.map((product: IProduct) => {
+					console.log("IMAGE URL", product.productImages[0].imageUrl);
+
 					return (
-						<Link key={idx} to={""}>
+						<Link key={product.id} to={`/product/${product.id}`}>
 							<ProductCard
+								id={product.id}
 								name={product.productName}
 								price={product.price}
-								// imageUrl={`${process.env.R2_PUBLIC_URL}/fm-server/product/${product.id}`}
-								// imageUrl="https://pub-11f58ea63bad46d7bcb2e93933f7c6bb.r2.dev/fm-server/product/14/amikom-logo.png"
+								imageUrl={`${R2_PUBLIC_URL}/fm-server/product/${product.id}/${product.productImages[0].imageUrl}`}
 							/>
 						</Link>
 					);

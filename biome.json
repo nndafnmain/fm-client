@@ -27,6 +27,7 @@
 				"noUnusedTemplateLiteral": "off"
 			},
 			"suspicious": {
+				"noExplicitAny": "off",
 				"noArrayIndexKey": "off"
 			},
 			"recommended": true

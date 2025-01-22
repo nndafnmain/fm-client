@@ -3,27 +3,48 @@ import ImageDetail from "./ImageDetail";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-const images = [
-	"/products/prd1.jpg",
-	"/products/prd2.jpg",
-	"/products/prd1.jpg",
-];
+import { useProductDetail } from "../hooks/useProductDetail";
+import { useParams } from "react-router-dom";
+import { R2_PUBLIC_URL } from "@/lib/constants";
+import { useAddItemToCart } from "@/features/cart/hooks/useAddItemToCart";
 
 export const ProductDetail = () => {
+	const { id } = useParams();
 	const [rating, setRating] = useState(0);
 
 	const handleRating = (rate: number) => {
 		setRating(rate);
 	};
 
+	const { data, error, isLoading } = useProductDetail(Number(id));
+
+	if (error) {
+		return <p>Error!!</p>;
+	}
+
+	if (isLoading) {
+		return <p>Loading!!</p>;
+	}
+
+	console.log("DATA DETAIL", data);
+	const imageUrls = data?.productImages.map(
+		(image) =>
+			`${R2_PUBLIC_URL}/fm-server/product/${data.id}/${image.imageUrl}`,
+	);
+
+	// const addToCart = useAddItemToCart();
+
 	return (
 		<main className="grid grid-cols-1 space-y-3 pb-16">
 			<section>
-				<ImageDetail images={images} autoPlay={false} />
+				{imageUrls && imageUrls.length > 0 && (
+					<ImageDetail images={imageUrls} autoPlay={false} />
+				)}
 			</section>
 			<section className="container space-y-4">
-				<p className="text-xl font-semibold text-gray-900">Chinese Cabbage</p>
+				<p className="text-xl font-semibold text-gray-900">
+					{data?.productName}
+				</p>
 				<div className="flex">
 					{[1, 2, 3, 4, 5].map((star) => (
 						<Star
@@ -38,7 +59,7 @@ export const ProductDetail = () => {
 				</div>
 				<div className="font-normal flex gap-3">
 					<p className="text-gray-300 line-through text-sm">Rp 100.000</p>
-					<p className="text-green-600 text-sm font-semibold">Rp 50.000</p>
+					<p className="text-green-600 text-sm font-semibold">{data?.price}</p>
 					<p className="text-red-600 rounded-full bg-red-300 text-[9px] p-1">
 						50% off
 					</p>
@@ -47,16 +68,12 @@ export const ProductDetail = () => {
 					<h1 className="text-sm font-semibold text-blue-700">
 						Product information
 					</h1>
-					<p className="text-[0.70rem] text-gray-500">
-						Class aptent taciti sociosqu ad litora torquent per conubia nostra,
-						per inceptos himenaeos. Nulla nibh diam, blandit vel consequat nec,
-						ultrices et ipsum. Nulla varius magna a consequat pulvinar.{" "}
-					</p>
+					<p className="text-[0.70rem] text-gray-500">{data?.description}</p>
 				</div>
 				<div className="space-y-1">
 					<div className="text-xs">
 						<span className="font-semibold">Category:</span>{" "}
-						<span className="text-gray-500">Vegetables</span>
+						<span className="text-gray-500">{data?.productCategory}</span>
 					</div>
 					<p className="text-xs">
 						<span className="font-semibold">Tags:</span>{" "}
@@ -66,32 +83,7 @@ export const ProductDetail = () => {
 			</section>
 			<section className="container space-y-2">
 				<p className="text-sm font-semibold">Description</p>
-				<p className="text-xs text-gray-500">
-					Sed commodo aliquam dui ac porta. Fusce ipsum felis, imperdiet at
-					posuere ac, viverra at mauris. Maecenas tincidunt ligula a sem
-					vestibulum pharetra. Maecenas auctor tortor lacus, nec laoreet nisi
-					porttitor vel. Etiam tincidunt metus vel dui interdum sollicitudin.
-					Mauris sem ante, vestibulum nec orci vitae, aliquam mollis lacus. Sed
-					et condimentum arcu, id molestie tellus. Nulla facilisi. Nam
-					scelerisque vitae justo a convallis. Morbi urna ipsum, placerat quis
-					commodo quis, egestas elementum leo. Donec convallis mollis enim.
-					Aliquam id mi quam. Phasellus nec fringilla elit. Nulla mauris tellus,
-					feugiat quis pharetra sed, gravida ac dui. Sed iaculis, metus faucibus
-					elementum tincidunt, turpis mi viverra velit, pellentesque tristique
-					neque mi eget nulla. Proin luctus elementum neque et pharetra. Sed
-					commodo aliquam dui ac porta. Fusce ipsum felis, imperdiet at posuere
-					ac, viverra at mauris. Maecenas tincidunt ligula a sem vestibulum
-					pharetra. Maecenas auctor tortor lacus, nec laoreet nisi porttitor
-					vel. Etiam tincidunt metus vel dui interdum sollicitudin. Mauris sem
-					ante, vestibulum nec orci vitae, aliquam mollis lacus. Sed et
-					condimentum arcu, id molestie tellus. Nulla facilisi. Nam scelerisque
-					vitae justo a convallis. Morbi urna ipsum, placerat quis commodo quis,
-					egestas elementum leo. Donec convallis mollis enim. Aliquam id mi
-					quam. Phasellus nec fringilla elit. Nulla mauris tellus, feugiat quis
-					pharetra sed, gravida ac dui. Sed iaculis, metus faucibus elementum
-					tincidunt, turpis mi viverra velit, pellentesque tristique neque mi
-					eget nulla. Proin luctus elementum neque et pharetra.
-				</p>
+				<p className="text-xs text-gray-500">{data?.longDesc}</p>
 			</section>
 			<section className="container space-y-3">
 				<p className="font-semibold text-sm">Customer feedbacks</p>
@@ -126,7 +118,14 @@ export const ProductDetail = () => {
 				</p>
 			</section>
 			<section className="fixed bottom-0 right-0 left-0 z-0 border border-gray-200 bg-white shadow-md p-2">
-				<Button className="w-full bg-orange-500">+ Add to cart</Button>
+				<Button
+					className="w-full bg-orange-500"
+					// onClick={() =>
+					// 	addToCart.mutate({ userId: 2, productId: Number(data?.id) })
+					// }
+				>
+					+ Add to cart
+				</Button>
 			</section>
 		</main>
 	);

@@ -6,8 +6,6 @@ interface CarouselProps {
 	autoPlayInterval?: number;
 }
 
-type Test = "ok";
-
 const ImageDetail = ({
 	images,
 	autoPlay = true,
