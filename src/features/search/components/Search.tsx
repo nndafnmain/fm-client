@@ -19,8 +19,8 @@ export const Search = () => {
 	);
 
 	return (
-		<main className="container">
-			<h1 className="text-center">Search</h1>
+		<main className="container space-y-3 mt-4">
+			<h1 className="text-center text-2xl font-semibold">Search</h1>
 			<section>
 				<Input
 					placeholder="search for items..."

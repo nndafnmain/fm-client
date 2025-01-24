@@ -13,26 +13,20 @@ export const SearchResultCard: React.FC<ISearchResult> = ({
 	productName,
 }) => {
 	return (
-		<Card className="w-[100%] h-[65px] p-3 flex items-center">
-			<section className="grid grid-cols-3">
-				<section className="max-h-20">
-					<div className="overflow-hidden w-[90%] h-[53px]">
-						<img
-							src={imageUrl ?? "/products/prd1.jpg"}
-							alt={productName}
-							className="w-full object-cover h-full"
-							style={{ width: "100%", height: "100%", objectFit: "cover" }}
-						/>
-					</div>
-				</section>
-				<section className="flex flex-col gap-2">
-					<p className="text-sm font-semibold text-gray-900">
-						{productName ?? "Product name"}
-					</p>
-					<p className="text-sm font-semibold text-orange-500">
-						{price ?? "Rp 50000"}
-					</p>
-				</section>
+		<Card className="grid grid-cols-4 p-1 border-0">
+			<section className="max-w-[56px] max-h-[50px]">
+				<div className="overflow-hidden w-full h-full">
+					<img
+						src={imageUrl ?? "/products/prd1.jpg"}
+						alt=""
+						className="w-full object-cover h-full"
+						style={{ width: "100%", height: "100%", objectFit: "cover" }}
+					/>
+				</div>
+			</section>
+			<section className="col-span-3">
+				<p className="text-base font-semibold">{productName}</p>
+				<p className="text-xs text-orange-500">Rp {price}</p>
 			</section>
 		</Card>
 	);
